@@ -29,8 +29,13 @@ export const checkAuth = async (req) => {
   if (!cookie) return null;
 
   const token = cookie.split("=")[1];
+  console.log("JWT Token:", token);
 
-  const decoded = jwt.verify(token, process.env.JWT_SECRET);
-
-  return await User.findById(decoded._id);
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    return await User.findById(decoded._id);
+  } catch (error) {
+    console.error("JWT Verification Error:", error.message);
+    return null; // Or handle the error as needed
+  }
 };
